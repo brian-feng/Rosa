@@ -49,33 +49,141 @@ void Chess::setUpBoard()
             _grid[y][x].setNotation(piece);
         }
     }
-    Bit* bit = PieceForPlayer(0, King);
-    bit->setPosition(_grid[4][4].getPosition());
-    bit->setParent(&_grid[4][4]);
-    bit->setGameTag(King);
+
+    // white pieces
+    int player = 0;
+    Bit* bit = PieceForPlayer(player, Rook);
+    bit->setPosition(_grid[0][0].getPosition());
+    bit->setParent(&_grid[0][0]);
+    bit->setGameTag(Rook);
     _grid[0][0].setBit(bit);
+    bit = PieceForPlayer(player, Knight);
+    bit->setPosition(_grid[0][1].getPosition());
+    bit->setParent(&_grid[0][1]);
+    bit->setGameTag(Knight);
+    _grid[0][1].setBit(bit);
+    bit = PieceForPlayer(player, Bishop);
+    bit->setPosition(_grid[0][2].getPosition());
+    bit->setParent(&_grid[0][2]);
+    bit->setGameTag(Bishop);
+    _grid[0][2].setBit(bit);
+    bit = PieceForPlayer(player, Queen);
+    bit->setPosition(_grid[0][3].getPosition());
+    bit->setParent(&_grid[0][3]);
+    bit->setGameTag(Queen);
+    _grid[0][3].setBit(bit);
+    bit = PieceForPlayer(player, King);
+    bit->setPosition(_grid[0][4].getPosition());
+    bit->setParent(&_grid[0][4]);
+    bit->setGameTag(King);
+    _grid[0][4].setBit(bit);
+    bit = PieceForPlayer(player, Bishop);
+    bit->setPosition(_grid[0][5].getPosition());
+    bit->setParent(&_grid[0][5]);
+    bit->setGameTag(Bishop);
+    _grid[0][5].setBit(bit);
+    bit = PieceForPlayer(player, Knight);
+    bit->setPosition(_grid[0][6].getPosition());
+    bit->setParent(&_grid[0][6]);
+    bit->setGameTag(Knight);
+    _grid[0][6].setBit(bit);
+    bit = PieceForPlayer(player, Rook);
+    bit->setPosition(_grid[0][7].getPosition());
+    bit->setParent(&_grid[0][7]);
+    bit->setGameTag(Rook);
+    _grid[0][7].setBit(bit);
+    for(int i = 0; i < 8; i++){
+        bit = PieceForPlayer(player, Pawn);
+        bit->setPosition(_grid[1][i].getPosition());
+        bit->setParent(&_grid[1][i]);
+        bit->setGameTag(Pawn);
+        _grid[1][i].setBit(bit);
+    }
+
+    // black pieces
+    player = 1;
+    bit = PieceForPlayer(player, Rook);
+    bit->setPosition(_grid[7][0].getPosition());
+    bit->setParent(&_grid[7][0]);
+    bit->setGameTag(Rook);
+    _grid[7][0].setBit(bit);
+    bit = PieceForPlayer(player, Knight);
+    bit->setPosition(_grid[7][1].getPosition());
+    bit->setParent(&_grid[7][1]);
+    bit->setGameTag(Knight);
+    _grid[7][1].setBit(bit);
+    bit = PieceForPlayer(player, Bishop);
+    bit->setPosition(_grid[7][2].getPosition());
+    bit->setParent(&_grid[8][2]);
+    bit->setGameTag(Bishop);
+    _grid[7][2].setBit(bit);
+    bit = PieceForPlayer(player, Queen);
+    bit->setPosition(_grid[7][3].getPosition());
+    bit->setParent(&_grid[7][3]);
+    bit->setGameTag(Queen);
+    _grid[7][3].setBit(bit);
+    bit = PieceForPlayer(player, King);
+    bit->setPosition(_grid[7][4].getPosition());
+    bit->setParent(&_grid[7][4]);
+    bit->setGameTag(King);
+    _grid[7][4].setBit(bit);
+    bit = PieceForPlayer(player, Bishop);
+    bit->setPosition(_grid[7][5].getPosition());
+    bit->setParent(&_grid[7][5]);
+    bit->setGameTag(Bishop);
+    _grid[7][5].setBit(bit);
+    bit = PieceForPlayer(player, Knight);
+    bit->setPosition(_grid[7][6].getPosition());
+    bit->setParent(&_grid[7][6]);
+    bit->setGameTag(Knight);
+    _grid[7][6].setBit(bit);
+    bit = PieceForPlayer(player, Rook);
+    bit->setPosition(_grid[7][7].getPosition());
+    bit->setParent(&_grid[7][7]);
+    bit->setGameTag(Rook);
+    _grid[7][7].setBit(bit);
+    for(int i = 0; i < 8; i++){
+        bit = PieceForPlayer(player, Pawn);
+        bit->setPosition(_grid[6][i].getPosition());
+        bit->setParent(&_grid[6][i]);
+        bit->setGameTag(Pawn);
+        _grid[6][i].setBit(bit);
+    }
 }
 
-//
-// about the only thing we need to actually fill out for tic-tac-toe
-//
-bool Chess::actionForEmptyHolder(BitHolder &holder)
+bool Chess::actionForEmptyHolder(BitHolder &holder, ChessPiece piece)
 {
-    return false;
+    if(holder.bit()){
+        return false;
+    }
+
+    Bit *bit = PieceForPlayer(getCurrentPlayer()->playerNumber(), piece);
+    bit->setPosition(holder.getPosition());
+    bit->setParent(&holder);
+    bit->setGameTag(piece);
+    holder.setBit(bit);
+    return true;
 }
 
 bool Chess::canBitMoveFrom(Bit &bit, BitHolder &src)
 {
-    return true;
+    return bit.getOwner()->playerNumber() == getCurrentPlayer()->playerNumber();
 }
 
 bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
 {
-    return true;
+    if(bit.gameTag() == Pawn){
+        int player = bit.getOwner()->playerNumber();
+        if(player == 0){
+            std::cout << bit.getPosition().x << bit.getPosition().y << std::endl;
+            return true;
+        }
+    }
+    return false;
 }
 
 void Chess::bitMovedFromTo(Bit &bit, BitHolder &src, BitHolder &dst) {
-
+    endTurn();
 }
 
 //

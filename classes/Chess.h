@@ -7,11 +7,11 @@ const int pieceSize = 64;
 enum ChessPiece {
     NoPiece = 0,
     Pawn = 1,
-    Knight,
-    Bishop,
-    Rook,
-    Queen,
-    King
+    Knight = 2,
+    Bishop = 3,
+    Rook = 4,
+    Queen = 5,
+    King = 6
 };
 
 //
@@ -31,7 +31,7 @@ public:
     std::string initialStateString() override;
     std::string stateString() override;
     void        setStateString(const std::string &s) override;
-    bool        actionForEmptyHolder(BitHolder& holder) override;
+    bool        actionForEmptyHolder(BitHolder& holder, ChessPiece piece);
     bool        canBitMoveFrom(Bit& bit, BitHolder& src) override;
     bool        canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst) override;
     void        bitMovedFromTo(Bit &bit, BitHolder &src, BitHolder &dst) override;
