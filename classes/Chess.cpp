@@ -189,11 +189,10 @@ bool Chess::canBitMoveFrom(Bit &bit, BitHolder &src)
 
 bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
 {
-    std::cout << src.getColumn() << src.getRow() << dst.getColumn() << dst.getRow() << std::endl;
     if(bit.gameTag() == Pawn){
         int player = bit.getOwner()->playerNumber();
         if(player == 0){
-            if(src.getRow() == 1 && src.getColumn() == dst.getColumn() && src.getRow() == dst.getRow()-2){
+            if(src.getRow() == 1 && src.getColumn() == dst.getColumn() && src.getRow() == dst.getRow()-2 && dst.empty() && _grid[src.getColumn()][src.getRow()-1].empty()){
                 return true;
             }
             if((src.getColumn() == dst.getColumn()-1 || src.getColumn() == dst.getColumn()+1) && src.getRow() == dst.getRow()-1 && dst.bit()){
@@ -202,7 +201,7 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
             return dst.empty() && src.getColumn() == dst.getColumn() && src.getRow() == dst.getRow()-1;
         }
         if(player == 1){
-            if(src.getRow() == 6 && src.getColumn() == dst.getColumn() && src.getRow() == dst.getRow()+2){
+            if(src.getRow() == 6 && src.getColumn() == dst.getColumn() && src.getRow() == dst.getRow()+2 && dst.empty() && _grid[src.getColumn()][src.getRow()+1].empty()){
                 return true;
             }
             if((src.getColumn() == dst.getColumn()-1 || src.getColumn() == dst.getColumn()+1) && src.getRow() == dst.getRow()+1 && dst.bit()){
@@ -336,13 +335,96 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
                 return true;
             }
         }
+        int player = getCurrentPlayer()->playerNumber();
+        if(player == 0){
+            // is king home
+            if(src.getColumn() == 4 && src.getRow() == 0){
+                // is choosing correct tile
+                if(dst.getColumn() == 6 && dst.getRow() == 0){
+                    // is rook there
+                    if(_grid[0][7].bit()->gameTag() == Rook){
+                        return true;
+                    }
+                }
+                // is other tile
+                if(dst.getColumn() == 2 && dst.getRow() == 0){
+                    // is rook there
+                    if(_grid[0][0].bit()->gameTag() == Rook){
+                        return true;
+                    }
+                }
+            }
+        }
+        if(player == 1){
+            // is king home
+            if(src.getColumn() == 4 && src.getRow() == 7){
+                // is choosing correct tile
+                if(dst.getColumn() == 6 && dst.getRow() == 7){
+                    // is rook there
+                    if(_grid[7][7].bit()->gameTag() == Rook){
+                        return true;
+                    }
+                }
+                // is other tile
+                if(dst.getColumn() == 2 && dst.getRow() == 7){
+                    // is rook there
+                    if(_grid[7][0].bit()->gameTag() == Rook){
+                        return true;
+                    }
+                }
+            }
+        }
 
         return false;
     }
     return false;
 }
 
+
 void Chess::bitMovedFromTo(Bit &bit, BitHolder &src, BitHolder &dst) {
+    int player = getCurrentPlayer()->playerNumber();
+    if(player == 0){
+        // is king home
+        if(src.getColumn() == 4 && src.getRow() == 0){
+            // is choosing correct tile
+            if(dst.getColumn() == 6 && dst.getRow() == 0){
+                // is rook there
+                if(_grid[0][7].bit()->gameTag() == Rook){
+                    actionForEmptyHolder(_grid[0][5], Rook);
+                    _grid[0][7].destroyBit();
+                }
+            }
+            // is other tile
+            if(dst.getColumn() == 2 && dst.getRow() == 0){
+                // is rook there
+                if(_grid[0][0].bit()->gameTag() == Rook){
+                    actionForEmptyHolder(_grid[0][3], Rook);
+                    _grid[0][0].destroyBit();
+                }
+            }
+        }
+    }
+    if(player == 1){
+        // is king home
+        if(src.getColumn() == 4 && src.getRow() == 7){
+            // is choosing correct tile
+            if(dst.getColumn() == 6 && dst.getRow() == 7){
+                // is rook there
+                if(_grid[7][7].bit()->gameTag() == Rook){
+                    actionForEmptyHolder(_grid[7][5], Rook);
+                    _grid[7][7].destroyBit();
+                }
+            }
+            // is other tile
+            if(dst.getColumn() == 2 && dst.getRow() == 7){
+                // is rook there
+                if(_grid[7][0].bit()->gameTag() == Rook){
+                    actionForEmptyHolder(_grid[7][3], Rook);
+                    _grid[7][0].destroyBit();
+                }
+            }
+        }
+    }
     endTurn();
 }
 
