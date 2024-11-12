@@ -258,6 +258,83 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
         }
         return false;
     }
+    if(bit.gameTag() == Rook){
+        // must be on same file or same rank
+        if((srcPos.x == dstPos.x) != (srcPos.y == dstPos.y)){
+            // same file
+            if(srcPos.x == dstPos.x){
+                int y;
+                if(srcPos.y < dstPos.y){
+                    y = 1;
+                }
+                else{
+                    y = -1;
+                }
+                while(srcPos.y >= 0 && srcPos.y < 8){
+                    srcPos.y += y;
+                    if(srcPos.y == dstPos.y){
+                        return true;
+                    }
+                    if(_grid[srcPos.y][srcPos.x].bit() != nullptr){
+                        return false;
+                    }
+                }
+                return false;
+            }
+            // same rank
+            else{
+                int x;
+                if(srcPos.x < dstPos.x){
+                    x = 1;
+                }
+                else{
+                    x = -1;
+                }
+                while(srcPos.x >= 0 && srcPos.x < 8){
+                    srcPos.x += x;
+                    if(srcPos.x == dstPos.x){
+                        return true;
+                    }
+                    if(_grid[srcPos.y][srcPos.x].bit() != nullptr){
+                        return false;
+                    }
+                }
+                return false;
+            }
+        }
+        return false;
+    }
+    if(bit.gameTag() == Queen){
+        bool status = false;
+        bit.setGameTag(Bishop);
+        if(canBitMoveFromTo(bit, src, dst)){
+            status = true;
+        }
+        bit.setGameTag(Rook);
+        if(canBitMoveFromTo(bit, src, dst)){
+            status = true;
+        }
+        bit.setGameTag(Queen);
+        return status;
+    }
+    if(bit.gameTag() == King){
+        int additions[8][2] = {
+            {1, 1},
+            {1, 0},
+            {1, -1},
+            {0, 1},
+            {0, -1},
+            {-1, 1},
+            {-1, 0},
+            {-1, -1}
+        };
+        for(int i = 0; i < 8; i++){
+            if(srcPos.x+additions[i][0] == dstPos.x && srcPos.y+additions[i][1] == dstPos.y){
+                return true;
+            }
+        }
+        return false;
+    }
     return false;
 }
 
