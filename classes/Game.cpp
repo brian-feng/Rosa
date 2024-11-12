@@ -168,7 +168,7 @@ void Game::findDropTarget(ImVec2 &pos)
 					_dropTarget->setHighlighted(false);
 					_dropTarget = nullptr;
 				}
-				std::cout << holder.canDropBitAtPoint(_dragBit, pos) << canBitMoveFromTo(*_dragBit, *_oldHolder, holder) << std::endl;
+				//std::cout << holder.canDropBitAtPoint(_dragBit, pos) << canBitMoveFromTo(*_dragBit, *_oldHolder, holder) << std::endl;
 				if (holder.canDropBitAtPoint(_dragBit, pos) && canBitMoveFromTo(*_dragBit, *_oldHolder, holder))
 				{
 					_dropTarget = &holder;

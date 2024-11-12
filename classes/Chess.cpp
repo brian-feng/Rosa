@@ -189,27 +189,26 @@ bool Chess::canBitMoveFrom(Bit &bit, BitHolder &src)
 
 bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
 {
-    position srcPos = getPosition(src);
-    position dstPos = getPosition(dst);
+    std::cout << src.getColumn() << src.getRow() << dst.getColumn() << dst.getRow() << std::endl;
     if(bit.gameTag() == Pawn){
         int player = bit.getOwner()->playerNumber();
         if(player == 0){
-            if(srcPos.y == 1 && srcPos.x == dstPos.x && srcPos.y == dstPos.y-2){
+            if(src.getRow() == 1 && src.getColumn() == dst.getColumn() && src.getRow() == dst.getRow()-2){
                 return true;
             }
-            if((srcPos.x == dstPos.x-1 || srcPos.x == dstPos.x+1) && srcPos.y == dstPos.y-1){
+            if((src.getColumn() == dst.getColumn()-1 || src.getColumn() == dst.getColumn()+1) && src.getRow() == dst.getRow()-1 && dst.bit()){
                 return true;
             }
-            return srcPos.x == dstPos.x && srcPos.y == dstPos.y-1;
+            return dst.empty() && src.getColumn() == dst.getColumn() && src.getRow() == dst.getRow()-1;
         }
         if(player == 1){
-            if(srcPos.y == 6 && srcPos.x == dstPos.x && srcPos.y == dstPos.y+2){
+            if(src.getRow() == 6 && src.getColumn() == dst.getColumn() && src.getRow() == dst.getRow()+2){
                 return true;
             }
-            if((srcPos.x == dstPos.x-1 || srcPos.x == dstPos.x+1) && srcPos.y == dstPos.y+1){
+            if((src.getColumn() == dst.getColumn()-1 || src.getColumn() == dst.getColumn()+1) && src.getRow() == dst.getRow()+1 && dst.bit()){
                 return true;
             }
-            return srcPos.x == dstPos.x && srcPos.y == dstPos.y+1;
+            return dst.empty() && src.getColumn() == dst.getColumn() && src.getRow() == dst.getRow()+1;
         }
         return false;
     }
@@ -225,7 +224,7 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
             {-1, -2}
         };
         for(int i = 0; i < 8; i++){
-            if(srcPos.x+additions[i][0] == dstPos.x && srcPos.y+additions[i][1] == dstPos.y){
+            if(src.getColumn()+additions[i][0] == dst.getColumn() && src.getRow()+additions[i][1] == dst.getRow()){
                 return true;
             }
         }
@@ -234,25 +233,27 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
     if(bit.gameTag() == Bishop){
         int x;
         int y;
-        if(srcPos.x < dstPos.x){
+        if(src.getColumn() < dst.getColumn()){
             x = 1;
         }
         else{
             x = -1;
         }
-        if(srcPos.y < dstPos.y){
+        if(src.getRow() < dst.getRow()){
             y = 1;
         }
         else{
             y = -1;
         }
-        while(srcPos.x >= 0 && srcPos.y < 8){
-            srcPos.x += x;
-            srcPos.y += y;
-            if(srcPos.x == dstPos.x && srcPos.y == dstPos.y){
+        int srcCol = src.getColumn();
+        int srcRow = src.getRow();
+        while(srcRow >= 0 && srcRow < 8){
+            srcCol += x;
+            srcRow += y;
+            if(srcCol == dst.getColumn() && srcRow == dst.getRow()){
                 return true;
             }
-            if(_grid[srcPos.y][srcPos.x].bit() != nullptr){
+            if(_grid[srcRow][srcCol].bit() != nullptr){
                 return false;
             }
         }
@@ -260,22 +261,23 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
     }
     if(bit.gameTag() == Rook){
         // must be on same file or same rank
-        if((srcPos.x == dstPos.x) != (srcPos.y == dstPos.y)){
+        if((src.getColumn() == dst.getColumn()) != (src.getRow() == dst.getRow())){
             // same file
-            if(srcPos.x == dstPos.x){
+            if(src.getColumn() == dst.getColumn()){
                 int y;
-                if(srcPos.y < dstPos.y){
+                if(src.getRow() < dst.getRow()){
                     y = 1;
                 }
                 else{
                     y = -1;
                 }
-                while(srcPos.y >= 0 && srcPos.y < 8){
-                    srcPos.y += y;
-                    if(srcPos.y == dstPos.y){
+                int srcRow = src.getRow();
+                while(srcRow >= 0 && srcRow < 8){
+                    srcRow += y;
+                    if(srcRow == dst.getRow()){
                         return true;
                     }
-                    if(_grid[srcPos.y][srcPos.x].bit() != nullptr){
+                    if(_grid[srcRow][src.getColumn()].bit() != nullptr){
                         return false;
                     }
                 }
@@ -284,18 +286,19 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
             // same rank
             else{
                 int x;
-                if(srcPos.x < dstPos.x){
+                if(src.getColumn() < dst.getColumn()){
                     x = 1;
                 }
                 else{
                     x = -1;
                 }
-                while(srcPos.x >= 0 && srcPos.x < 8){
-                    srcPos.x += x;
-                    if(srcPos.x == dstPos.x){
+                int srcCol = src.getColumn();
+                while(srcCol >= 0 && srcCol< 8){
+                    srcCol += x;
+                    if(srcCol == dst.getColumn()){
                         return true;
                     }
-                    if(_grid[srcPos.y][srcPos.x].bit() != nullptr){
+                    if(_grid[src.getRow()][srcCol].bit() != nullptr){
                         return false;
                     }
                 }
@@ -329,10 +332,11 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
             {-1, -1}
         };
         for(int i = 0; i < 8; i++){
-            if(srcPos.x+additions[i][0] == dstPos.x && srcPos.y+additions[i][1] == dstPos.y){
+            if(src.getColumn()+additions[i][0] == dst.getColumn() && src.getRow()+additions[i][1] == dst.getRow()){
                 return true;
             }
         }
+
         return false;
     }
     return false;

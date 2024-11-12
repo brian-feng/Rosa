@@ -7,6 +7,8 @@ class BitHolder : public Sprite
 public:
 	BitHolder() : Sprite()
 	{
+		_column = 0;
+		_row = 0;
 		_bit = nullptr;
 		_gameTag = 0;
 		_entityType = EntityBitHolder;
@@ -50,7 +52,7 @@ public:
 	virtual bool dropBitAtPoint(Bit *bit, const ImVec2 &point);
 
 	// initialize the holder with a position, color, and a sprite
-	virtual void initHolder(const ImVec2 &position, const ImVec4 &color, const char *spriteName);
+	virtual void initHolder(const ImVec2 &position, const ImVec4 &color, const char *spriteName, const int column, const int row);
 
 	// can be overriden by subclasses
 	virtual bool isMouseOver(const ImVec2 &mousePos)
@@ -58,7 +60,13 @@ public:
 		return Sprite::isMouseOver(mousePos);
 	};
 
+	int getColumn() { return _column; }
+    int getRow() { return _row; }
+    int getSquareIndex() { return _row * 8 + _column; }
+
 protected:
 	Bit *_bit;
 	int _gameTag;
+	int _column;
+	int _row;
 };
