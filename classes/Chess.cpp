@@ -165,6 +165,23 @@ bool Chess::actionForEmptyHolder(BitHolder &holder, ChessPiece piece)
     return true;
 }
 
+position Chess::getPosition(BitHolder &holder){
+    for (int y = 0; y < _gameOptions.rowY; y++) {
+        for (int x = 0; x < _gameOptions.rowX; x++) {
+            if (_grid[y][x].getPosition().x == holder.getPosition().x && _grid[y][x].getPosition().y == holder.getPosition().y){
+                position ret;
+                ret.x = x;
+                ret.y = y;
+                return ret;
+            }
+        }
+    }
+    position ret;
+    ret.x = -1;
+    ret.y = -1;
+    return ret;
+}
+
 bool Chess::canBitMoveFrom(Bit &bit, BitHolder &src)
 {
     return bit.getOwner()->playerNumber() == getCurrentPlayer()->playerNumber();
@@ -172,12 +189,62 @@ bool Chess::canBitMoveFrom(Bit &bit, BitHolder &src)
 
 bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
 {
+    position srcPos = getPosition(src);
+    position dstPos = getPosition(dst);
     if(bit.gameTag() == Pawn){
         int player = bit.getOwner()->playerNumber();
         if(player == 0){
-            std::cout << bit.getPosition().x << bit.getPosition().y << std::endl;
-            return true;
+            return srcPos.x == dstPos.x && srcPos.y == dstPos.y-1;
         }
+        if(player == 1){
+            return srcPos.x == dstPos.x && srcPos.y == dstPos.y+1;
+        }
+        return false;
+    }
+    if(bit.gameTag() == Knight){
+        int additions[8][2] = {
+            {2, 1},
+            {2, -1},
+            {-2, -1},
+            {-2, -2},
+            {1, 2},
+            {1, -2},
+            {-1, 2},
+            {-1, -2}
+        };
+        for(int i = 0; i < 8; i++){
+            if(srcPos.x+additions[i][0] == dstPos.x && srcPos.y+additions[i][1] == dstPos.y){
+                return true;
+            }
+        }
+        return false;
+    }
+    if(bit.gameTag() == Bishop){
+        int x;
+        int y;
+        if(srcPos.x < dstPos.x){
+            x = 1;
+        }
+        else{
+            x = -1;
+        }
+        if(srcPos.y < dstPos.y){
+            y = 1;
+        }
+        else{
+            y = -1;
+        }
+        while(srcPos.x >= 0 && srcPos.y < 8){
+            srcPos.x += x;
+            srcPos.y += y;
+            if(srcPos.x == dstPos.x && srcPos.y == dstPos.y){
+                return true;
+            }
+            if(_grid[srcPos.y][srcPos.x].bit() != nullptr){
+                return false;
+            }
+        }
+        return false;
     }
     return false;
 }

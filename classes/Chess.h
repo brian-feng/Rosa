@@ -4,6 +4,11 @@
 
 const int pieceSize = 64;
 
+typedef struct {
+    int x;
+    int y;
+} position;
+
 enum ChessPiece {
     NoPiece = 0,
     Pawn = 1,
@@ -32,6 +37,7 @@ public:
     std::string stateString() override;
     void        setStateString(const std::string &s) override;
     bool        actionForEmptyHolder(BitHolder& holder, ChessPiece piece);
+    position    getPosition(BitHolder& holder);
     bool        canBitMoveFrom(Bit& bit, BitHolder& src) override;
     bool        canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst) override;
     void        bitMovedFromTo(Bit &bit, BitHolder &src, BitHolder &dst) override;
