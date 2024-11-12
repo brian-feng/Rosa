@@ -194,9 +194,21 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
     if(bit.gameTag() == Pawn){
         int player = bit.getOwner()->playerNumber();
         if(player == 0){
+            if(srcPos.y == 1 && srcPos.x == dstPos.x && srcPos.y == dstPos.y-2){
+                return true;
+            }
+            if((srcPos.x == dstPos.x-1 || srcPos.x == dstPos.x+1) && srcPos.y == dstPos.y-1){
+                return true;
+            }
             return srcPos.x == dstPos.x && srcPos.y == dstPos.y-1;
         }
         if(player == 1){
+            if(srcPos.y == 6 && srcPos.x == dstPos.x && srcPos.y == dstPos.y+2){
+                return true;
+            }
+            if((srcPos.x == dstPos.x-1 || srcPos.x == dstPos.x+1) && srcPos.y == dstPos.y+1){
+                return true;
+            }
             return srcPos.x == dstPos.x && srcPos.y == dstPos.y+1;
         }
         return false;
