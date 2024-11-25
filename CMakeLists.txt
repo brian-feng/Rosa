@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.2.0)
-project(Rosa VERSION 0.1.0 LANGUAGES C CXX)
+project(tictactoe VERSION 0.1.0 LANGUAGES C CXX)
 
 # Set the C++ standard
 set(CMAKE_CXX_STANDARD 20)
@@ -42,7 +42,7 @@ else() # Linux
 endif()
 
 # Define the executable and sources
-add_executable(Rosa Application.cpp
+add_executable(tictactoe Application.cpp
                           imgui/imgui_demo.cpp
                           imgui/imgui_draw.cpp
                           imgui/imgui_tables.cpp
@@ -62,11 +62,11 @@ add_executable(Rosa Application.cpp
 
 # Link libraries based on the platform
 if(MACOS OR LINUX)
-    target_link_libraries(Rosa ${OPENGL_gl_LIBRARY} glfw)
+    target_link_libraries(tictactoe ${OPENGL_gl_LIBRARY} glfw)
 elseif(WINDOWS)
-    target_link_libraries(Rosa ${OPENGL_gl_LIBRARY})
+    target_link_libraries(tictactoe ${OPENGL_gl_LIBRARY})
     if(MINGW)
-        target_link_libraries(Rosa dwmapi)
+        target_link_libraries(tictactoe dwmapi)
     endif()
 endif()
 

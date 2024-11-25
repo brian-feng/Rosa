@@ -29,6 +29,9 @@ public:
     ~Chess();
 
     // set up the board
+    void        placePiece(const ChessPiece piece, const int x, const int y, const int player);
+    std::vector<std::string>    split(const std::string& s, const std::string& delimiter);
+    void        FENtoBoard(const std::string &s);
     void        setUpBoard() override;
 
     Player*     checkForWinner() override;
@@ -52,5 +55,12 @@ private:
     const char  bitToPieceNotation(int row, int column) const;
 
     ChessSquare      _grid[8][8];
+    bool            bkCastle;
+    bool            bqCastle;
+    bool            wkCastle;
+    bool            wqCastle;
+    BitHolder     *enPassantTarget;
+    int             halfMoveCount;
+    int             fullMoveCount;
 };
 
