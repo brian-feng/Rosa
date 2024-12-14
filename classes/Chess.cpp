@@ -221,8 +221,7 @@ void Chess::setUpBoard()
     halfMoveCount = 0;
     fullMoveCount = 1;  
 
-    FENtoBoard("rnb1kbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    //rnb1kbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+    FENtoBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     setAIPlayer(1);
 }
 
