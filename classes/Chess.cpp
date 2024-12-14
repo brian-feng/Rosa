@@ -223,8 +223,8 @@ void Chess::setUpBoard()
 
     FENtoBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
-    setAIPlayer(0);
-    std::cout << canBitMoveFromTo(*_grid[0][1].bit(), _grid[0][1], _grid[1][3]) << std::endl;
+    setAIPlayer(1);
+    std::cout << canBitMoveFromTo(*_grid[7][6].bit(), _grid[7][6], _grid[5][4]) << std::endl;
 }
 
 bool Chess::actionForEmptyHolder(BitHolder &holder, ChessPiece piece)
@@ -310,7 +310,7 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
             {2, 1},
             {2, -1},
             {-2, -1},
-            {-2, -2},
+            {-2, 1},
             {1, 2},
             {1, -2},
             {-1, 2},
@@ -449,14 +449,20 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
                 if(dst.getColumn() == 6 && dst.getRow() == 0 && wkCastle){
                     // is rook there
                     if(_grid[0][7].bit()->gameTag() == Rook){
-                        return true;
+                        // nothing blocking
+                        if(_grid[0][5].empty() && _grid[0][6].empty()){
+                            return true;
+                        }
                     }
                 }
                 // is other tile
                 if(dst.getColumn() == 2 && dst.getRow() == 0 && wqCastle){
                     // is rook there
                     if(_grid[0][0].bit()->gameTag() == Rook){
-                        return true;
+                        // nothing blocking
+                        if(_grid[0][3].empty() && _grid[0][2].empty() && _grid[0][1].empty()){
+                            return true;
+                        }
                     }
                 }
             }
@@ -468,14 +474,19 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
                 if(dst.getColumn() == 6 && dst.getRow() == 7 && bkCastle){
                     // is rook there
                     if(_grid[7][7].bit()->gameTag() == Rook){
-                        return true;
+                        if(_grid[7][6].empty() && _grid[0][5].empty()){
+                            return true;
+                        }
                     }
                 }
                 // is other tile
                 if(dst.getColumn() == 2 && dst.getRow() == 7 && bqCastle){
                     // is rook there
                     if(_grid[7][0].bit()->gameTag() == Rook){
-                        return true;
+                        // nothing blocking
+                        if(_grid[7][3].empty() && _grid[0][2].empty() && _grid[0][1].empty()){
+                            return true;
+                        }
                     }
                 }
             }
