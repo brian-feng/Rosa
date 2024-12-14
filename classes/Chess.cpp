@@ -1008,23 +1008,23 @@ void Chess::copyGrid(){
 void Chess::makeMove(move m){
     ChessSquare src = _copyGrid[m.y][m.x];
     ChessSquare dst = _copyGrid[m.y2][m.x2];
-
+    /*
     dst.setBit(src.bit());
     src.bit()->setPosition(dst.getPosition());
     src.bit()->setParent(&dst);
-    src.destroyBit();
+    src.destroyBit();*/
 }
 
 void Chess::unmakeMove(move m){
     BitHolder src = _copyGrid[m.y][m.x];
     BitHolder dst = _copyGrid[m.y2][m.x2];
-
+    /*
     src.setBit(dst.bit());
     Bit* bit = PieceForPlayer(1-src.bit()->getOwner()->playerNumber(), m.capture);
     bit->setPosition(dst.getPosition());
     bit->setParent(&dst);
     bit->setGameTag(m.capture);
-    dst.setBit(bit);
+    dst.setBit(bit);*/
 }
 
 int Chess::negamax(int depth, int alpha, int beta, int color){
