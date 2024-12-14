@@ -25,6 +25,8 @@ typedef struct {
     int x2;
     int y2;
     ChessPiece capture;
+    bool promotion;
+    bool enPassant;
 } move;
 
 //
@@ -51,17 +53,26 @@ public:
     position    getPosition(BitHolder& holder);
     bool        canBitMoveFrom(Bit& bit, BitHolder& src) override;
     bool        canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst) override;
+    bool        copyCanBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst);
+
     void        bitMovedFromTo(Bit &bit, BitHolder &src, BitHolder &dst) override;
 
     void        stopGame() override;
     BitHolder& getHolderAt(const int x, const int y) override { return _grid[y][x]; }
 
     std::vector<move>   generateMoves(int player);
+    int         evaluatePosition();
+    void        copyGrid();
+    void        makeMove(move m);
+    void        unmakeMove(move m);
+    int         negamax(int depth, int alpha, int beta, int color);
 	void        updateAI() override;
     bool        gameHasAI() override { return true; }
 private:
     Bit *       PieceForPlayer(const int playerNumber, ChessPiece piece);
     const char  bitToPieceNotation(int row, int column) const;
+    const char  copyBitToPieceNotation(int row, int column) const;
+
 
     ChessSquare      _grid[8][8];
     ChessSquare      _copyGrid[8][8];
