@@ -219,10 +219,12 @@ void Chess::setUpBoard()
     wqCastle = false;
     enPassantTarget = NULL;
     halfMoveCount = 0;
-    fullMoveCount = 1;
+    fullMoveCount = 1;  
 
     FENtoBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
+    setAIPlayer(0);
+    std::cout << canBitMoveFromTo(*_grid[0][1].bit(), _grid[0][1], _grid[1][3]) << std::endl;
 }
 
 bool Chess::actionForEmptyHolder(BitHolder &holder, ChessPiece piece)
@@ -266,8 +268,6 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
     if(bit.gameTag() == Pawn){
         int player = bit.getOwner()->playerNumber();
         if(player == 0){
-            std::cout << src.getColumn() << src.getRow() << dst.getColumn() << dst.getRow() << std::endl;
-            std::cout << (src.getRow() == 1) << (src.getColumn() == dst.getColumn()) << (src.getRow() == dst.getRow()-2) << dst.empty() << _grid[src.getRow()+1][src.getColumn()].empty() << std::endl;
             // double move
             if(src.getRow() == 1 && src.getColumn() == dst.getColumn() && src.getRow() == dst.getRow()-2 && dst.empty() && _grid[src.getRow()+1][src.getColumn()].empty()){
                 return true;
@@ -318,6 +318,9 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
         };
         for(int i = 0; i < 8; i++){
             if(src.getColumn()+additions[i][0] == dst.getColumn() && src.getRow()+additions[i][1] == dst.getRow()){
+                if(dst.bit() && dst.bit()->getOwner()->playerNumber() == bit.getOwner()->playerNumber()){
+                    return false;
+                }
                 return true;
             }
         }
@@ -343,11 +346,11 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
         while(srcRow >= 0 && srcRow < 8){
             srcCol += x;
             srcRow += y;
-            if(srcCol == dst.getColumn() && srcRow == dst.getRow()){
-                return true;
-            }
             if(_grid[srcRow][srcCol].bit() != nullptr){
                 return false;
+            }
+            if(srcCol == dst.getColumn() && srcRow == dst.getRow()){
+                return true;
             }
         }
         return false;
@@ -367,7 +370,10 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
                 int srcRow = src.getRow();
                 while(srcRow >= 0 && srcRow < 8){
                     srcRow += y;
-                    if(srcRow == dst.getRow()){
+                    if(srcRow >= 8 || srcRow < 0){
+                        return false;
+                    }
+                    if(srcRow == dst.getRow() && dst.bit()->getOwner()->playerNumber() != bit.getOwner()->playerNumber()){
                         return true;
                     }
                     if(_grid[srcRow][src.getColumn()].bit() != nullptr){
@@ -388,7 +394,10 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
                 int srcCol = src.getColumn();
                 while(srcCol >= 0 && srcCol< 8){
                     srcCol += x;
-                    if(srcCol == dst.getColumn()){
+                    if(srcCol >= 8 || srcCol < 0){
+                        return false;
+                    }
+                    if(srcCol == dst.getColumn() && dst.bit()->getOwner()->playerNumber() != bit.getOwner()->playerNumber()){
                         return true;
                     }
                     if(_grid[src.getRow()][srcCol].bit() != nullptr){
@@ -426,6 +435,9 @@ bool Chess::canBitMoveFromTo(Bit& bit, BitHolder& src, BitHolder& dst)
         };
         for(int i = 0; i < 8; i++){
             if(src.getColumn()+additions[i][0] == dst.getColumn() && src.getRow()+additions[i][1] == dst.getRow()){
+                if(dst.bit() && dst.bit()->getOwner()->playerNumber() == bit.getOwner()->playerNumber()){
+                    return false;
+                }
                 return true;
             }
         }
@@ -645,11 +657,46 @@ void Chess::setStateString(const std::string &s)
     }
 }
 
-
+std::vector<move> Chess::generateMoves(int player) {
+    std::vector<move> moves;
+    for(int y = 0; y < 8; y++){
+        for(int x = 0; x < 8; x++){
+            Bit *src = _grid[y][x].bit();
+            if(src == nullptr){
+                continue;
+            }
+            if(src->getOwner()->playerNumber() == player){
+                for(int y2 = 0; y2 < 8; y2++){
+                    for(int x2 = 0; x2 < 8; x2++){
+                        if(canBitMoveFromTo(*src, _grid[y][x], _grid[y2][x2])){
+                            move m;
+                            m.x = x;
+                            m.y = y;
+                            m.x2 = x2;
+                            m.y2 = y2;
+                            if(_grid[y2][x2].bit()){
+                                m.capture = (ChessPiece)_grid[y2][x2].bit()->gameTag();
+                            }
+                            m.capture = NoPiece;
+                            moves.push_back(m);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return moves;
+}
 //
 // this is the function that will be called by the AI
 //
 void Chess::updateAI() 
 {
+    std::vector<move> moves = generateMoves(getCurrentPlayer()->playerNumber());
+    for(int i = 0; i < moves.size(); i++){
+        std::cout << bitToPieceNotation(moves[i].y, moves[i].x) << moves[i].y << moves[i].x << " to " << moves[i].y2 << moves[i].x2 << std::endl;
+    }
+    std::cout << moves.size() << std::endl;
+    endTurn();
 }
 

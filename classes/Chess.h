@@ -19,6 +19,14 @@ enum ChessPiece {
     King = 6
 };
 
+typedef struct {
+    int x;
+    int y;
+    int x2;
+    int y2;
+    ChessPiece capture;
+} move;
+
 //
 // the main game class
 //
@@ -48,6 +56,7 @@ public:
     void        stopGame() override;
     BitHolder& getHolderAt(const int x, const int y) override { return _grid[y][x]; }
 
+    std::vector<move>   generateMoves(int player);
 	void        updateAI() override;
     bool        gameHasAI() override { return true; }
 private:
@@ -55,6 +64,7 @@ private:
     const char  bitToPieceNotation(int row, int column) const;
 
     ChessSquare      _grid[8][8];
+    ChessSquare      _copyGrid[8][8];
     bool            bkCastle;
     bool            bqCastle;
     bool            wkCastle;

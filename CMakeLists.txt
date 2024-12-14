@@ -42,7 +42,7 @@ else() # Linux
 endif()
 
 # Define the executable and sources
-add_executable(tictactoe Application.cpp
+add_executable(Rosa Application.cpp
                           imgui/imgui_demo.cpp
                           imgui/imgui_draw.cpp
                           imgui/imgui_tables.cpp
@@ -62,9 +62,9 @@ add_executable(tictactoe Application.cpp
 
 # Link libraries based on the platform
 if(MACOS OR LINUX)
-    target_link_libraries(tictactoe ${OPENGL_gl_LIBRARY} glfw)
+    target_link_libraries(Rosa ${OPENGL_gl_LIBRARY} glfw)
 elseif(WINDOWS)
-    target_link_libraries(tictactoe ${OPENGL_gl_LIBRARY})
+    target_link_libraries(Rosa ${OPENGL_gl_LIBRARY})
     if(MINGW)
         target_link_libraries(tictactoe dwmapi)
     endif()
