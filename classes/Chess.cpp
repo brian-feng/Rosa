@@ -222,7 +222,7 @@ void Chess::setUpBoard()
     fullMoveCount = 1;  
 
     FENtoBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    setAIPlayer(1);
+    //setAIPlayer(1);
 }
 
 bool Chess::actionForEmptyHolder(BitHolder &holder, ChessPiece piece)

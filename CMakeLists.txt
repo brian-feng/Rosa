@@ -56,6 +56,9 @@ add_executable(Rosa Application.cpp
                           classes/Square.cpp
                           classes/ChessSquare.cpp
                           classes/Chess.cpp
+                          classes/Types.cpp
+                          classes/Tables.cpp
+                          classes/Position.cpp
                           ${MAIN_FILE}
                           ${IMPL_FILE}
                 )
